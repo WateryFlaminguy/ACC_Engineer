@@ -26,12 +26,24 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY,
 });
 
-client.on('interactionCreate', (interaction) => {
+//functions
+function addZero(time) {
+    let timeSeconds = time[1]?.split('.');
+    if (timeSeconds[0].length < 2) {
+        for (let i = 0; i < 2-timeSeconds[0].length; i++) {
+            timeSeconds[0] = '0' + timeSeconds[0];
+        }   
+    }
+    time[1] = timeSeconds?.join();
+    return time;
+}
+
+client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
     //ping test command
     if (interaction.commandName === 'ping') {
-        interaction.reply('Pong!');
+        await interaction.reply('Pong!');
     }
 
     //help command
@@ -54,22 +66,59 @@ client.on('interactionCreate', (interaction) => {
                 { name: 'Ping', value: 'Pong!', inline: true },
             )
         
-        interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
     }
 
     //fuel calculator command
     if (interaction.commandName === 'fuelcalculator') {
-        interaction.reply('Work in progress.');
+        let raceTime = interaction.options.getString('race-time').split(':');
+        let lapTime = interaction.options.getString('laptime').split(':');
+        const fuelUsage = interaction.options.getNumber('fuel-usage');
+        const safeLaps = interaction.options.getNumber('safe-laps') ?? 0;
+        
+        const [minutes, seconds] = lapTime.map(parseFloat);
+        const secondsLapTime = minutes * 60 + seconds;
+
+        raceTime = addZero(raceTime);
+        lapTime = addZero(lapTime)
+        
+        const minutesRaceTime = Number(raceTime[0]) * 60 + Number(raceTime[1]);
+        
+        const laps = Math.ceil(minutesRaceTime*60/secondsLapTime);
+        const minFuel = Math.ceil(laps * fuelUsage)
+        const safeFuel = minFuel + Math.ceil( minFuel * 0.03 ) * safeLaps;
+
+        let embed = new EmbedBuilder()
+            .setColor(interaction.guild.members.me.displayHexColor)
+            .setTitle('Fuel Calculator')
+            .setTimestamp()
+            .setFooter({ text: `Requested by - ${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+            .addFields(
+                { name: 'Race Time', value: `${raceTime.join()}`, inline: true },
+                { name: 'Average Lap Time', value: `${lapTime}`, inline: true },
+                //{ name: "\u200B", value: "\u200B" },
+                { name: 'Fuel per Lap', value: `${fuelUsage} L/Lap`, inline: true },
+                //{ name: '\u200b', value: '\u200b' },
+                { name: 'Minimum Fuel Required', value: `${minFuel}L`, inline: true },
+                { name: 'Safe fuel (+3%/lap)', value: `${safeFuel}L`, inline: true },
+                { name: 'Laps', value: `${laps} Laps`, inline: true },
+            )
+            if (minFuel > 132 ) {
+                embed.setDescription('Minimum required fuel superior to maximum car fuel capacity. Consider using the strategy maker.')
+            }
+        
+        await interaction.reply({ embeds: [embed] });
+        
     }
 
     //strategy maker command
     if (interaction.commandName === 'strategymaker') {
-        interaction.reply('Not available yet.');
+        await interaction.reply('Not available yet.');
     }
 
     //AI setup engineer command
     if (interaction.commandName === 'setupengineer') {
-        interaction.reply('Not available yet.');
+        await interaction.reply('Not available yet.');
     }
 
     //credits & donations command
@@ -89,7 +138,7 @@ client.on('interactionCreate', (interaction) => {
                 //{ name: 'Donations', value: '[Test link](https://youtube.com)' },
             )
         
-        interaction.reply({ embeds: [embed] });
+        await interaction.reply({ embeds: [embed] });
     }
 
     console.log(interaction);

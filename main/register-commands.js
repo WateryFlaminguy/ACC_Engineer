@@ -10,6 +10,31 @@ const commands = [
   {
     name: "fuelcalculator",
     description: "Allows you to calculate the necessary amount of fuel for a race.",
+    options: [
+      {
+        name: 'race-time',
+        description: 'Race length with the format hh:mm',
+        type: ApplicationCommandOptionType.String,
+        required: true,
+      },
+      {
+        name: 'laptime',
+        description: 'Average lap time with the format mm:ss.ms',
+        type: ApplicationCommandOptionType.String,
+        required: true,
+      },
+      {
+        name: 'fuel-usage',
+        description: 'Average fuel consumption per lap',
+        type: ApplicationCommandOptionType.Number,
+        required: true,
+      },
+      {
+        name: 'safe-laps',
+        description: 'Additional fuel to add (3%/lap)',
+        type: ApplicationCommandOptionType.Number,
+      },
+    ],
   },
   {
     name: "strategymaker",
