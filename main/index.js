@@ -1,6 +1,7 @@
 //requirements
 require('dotenv/config');
-const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionResponse } = require('discord.js');
+const { CommandKit } = require('commandkit');
 const { OpenAI } = require('openai');
 
 //define client 
@@ -11,6 +12,12 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent
     ],
+});
+
+new CommandKit({
+    client,
+    commandsPath: `${__dirname}/commands`,
+    bulkRegister: true,
 });
 
 //signals when bot online
@@ -40,8 +47,396 @@ function addZero(time) {
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
+    console.log(interaction);
 
-    //ping test command
+    //strategy maker command
+    if (interaction.commandName === 'strategymaker') {
+        if (interaction.isAutocomplete()) {
+            const focusedOption = interaction.options.getFocused();
+            console.log(focusedValue)
+            
+            if (focusedOption.name === 'car') {
+                const filteredChoices = cars.filter((car) =>
+                    car.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
+                );
+        
+                const results = filteredChoices.map((choice) => {
+                    return {
+                        name: `[${choice.class}] ${choice.name}`,
+                        value: choice.id,
+                    };
+                });
+
+                interaction.respond(results.slice(0, 25)).catch(() => {});
+
+            } else if (focusedOption.name === 'track') {
+                const filteredChoices = tracks.filter((track) =>
+                    track.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
+                );
+        
+                const results = filteredChoices.map((choice) => {
+                    return {
+                        name: choice.name,
+                        value: choice.id,
+                    };
+                });
+
+                interaction.respond(results.slice(0, 25)).catch(() => {});
+            };
+        }
+        /*const carSelect = new StringSelectMenuBuilder()
+			.setCustomId('vehicularDevice')
+			.setPlaceholder('Select your car.')
+			.addOptions(
+				new StringSelectMenuOptionBuilder()
+					.setLabel('AMR V12 Vantage 2013')
+					.setValue('barcelona')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('AMR V8 Vantage 2019')
+					.setValue('brands')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Audi R8 LMS 2015')
+					.setValue('COTA')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Audi R8 LMS Evo 2019')
+					.setValue('donington')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Audi R8 LMS Evo II 2022')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Bentley Continental 2015')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Bentley Continental 2018')
+					.setValue('indianapolis')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('BMW M6 2017')
+					.setValue('kyalami')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('BMW M4 2021')
+					.setValue('lagunaseca')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Emil Frey Jaguar 2012')
+					.setValue('misano')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Ferrari 488 2018')
+					.setValue('bathurst')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Ferrari 488 EVO 2020')
+					.setValue('monza')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Ferrari 296 2023')
+					.setValue('nurburgring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Honda NSX GT3 2017')
+					.setValue('nordschleife')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Honda NSX Evo GT3 2019')
+					.setValue('oulton')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Lamborghini Huracan GT3 2015')
+					.setValue('paulricard')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Lamborghini Huracan Evo GT3 2019')
+					.setValue('rbr')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Lamborghini Huracan EVO2 GT3 2023')
+					.setValue('silverstone')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Lexus RC F GT3 2016')
+					.setValue('snetterton')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('McLaren 650S GT3 2015')
+					.setValue('spa')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('McLaren 720S GT3 2019')
+					.setValue('suzuka')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('McLaren 720s Evo GT3 2023')
+					.setValue('valencia')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Mercedes AMG GT3 2015')
+					.setValue('watkins')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Mercedes AMG Evo GT3 2020')
+					.setValue('zandvoort')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Nissan GTR Nismo GT3 2015')
+					.setValue('zolder')
+                    .setEmoji('1196286296843354141'),
+                    new StringSelectMenuOptionBuilder()
+					.setLabel('Nissan GTR Nismo GT3 2018')
+					.setValue('spa')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 911 GT3 R 2018')
+					.setValue('suzuka')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 911 II GT3R 2019')
+					.setValue('valencia')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 992 GT3R 2023')
+					.setValue('watkins')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Reiter Engineering R-EX GT3 2017')
+					.setValue('zandvoort')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Alpine A110 2018')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('AMR V8 Vantage 2018')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Audi R8 LMS 2018')
+					.setValue('indianapolis')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('BMW M4 2018')
+					.setValue('kyalami')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Chevrolet Camaro R 2017')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Ginetta G55 2012')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('KTM X-Bow 2016')
+					.setValue('indianapolis')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Maserati Granturismo MC 2016')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('McLaren 570S 2016')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Mercedes AMG 2016')
+					.setValue('indianapolis1')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 718 Cayman Clubsport 2019')
+					.setValue('kyalami1')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Audi R8 LMS GT2')
+					.setValue('hungaroring1')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('KTM X-Bow GT2 ')
+					.setValue('imola1')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Maserati MC20 GT2')
+					.setValue('indianapolis2')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Mercedes-AMG GT2')
+					.setValue('hungaroring2')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 991 II GT2 RS CS Evo')
+					.setValue('imola2')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 935 GT2')
+					.setValue('indianapolis')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Ferrari 488 Challenge Evo 2020')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Lamborghini Huracan Super Trofeo 2015')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Lamborghini Huracan Super Trofeo Evo 2 2021')
+					.setValue('indianapolis3')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 911 II GT3 Cup 2017')
+					.setValue('kyalami3')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Porsche 911 GT3 Cup (992) 2021')
+					.setValue('kyalami4')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('BMW M2 CS 2020')
+					.setValue('kyalami5')
+                    .setEmoji('1196286296843354141'),
+			);
+        
+        const trackSelect = new StringSelectMenuBuilder()
+			.setCustomId('track')
+			.setPlaceholder('Select the track.')
+			.addOptions(
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Barcelona')
+					.setValue('barcelona')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Brands Hatch')
+					.setValue('brands')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('COTA')
+					.setValue('COTA')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Donington Park')
+					.setValue('donington')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Hungaroring')
+					.setValue('hungaroring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Imola')
+					.setValue('imola')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Indianapolis')
+					.setValue('indianapolis')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Kyalami')
+					.setValue('kyalami')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Laguna Seca')
+					.setValue('lagunaseca')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Misano')
+					.setValue('misano')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Mount Panorama')
+					.setValue('bathurst')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Monza')
+					.setValue('monza')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Nürburgring')
+					.setValue('nurburgring')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Nürburgring 24h')
+					.setValue('nordschleife')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Oulton Park')
+					.setValue('oulton')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Paul Ricard')
+					.setValue('paulricard')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Red Bull Ring')
+					.setValue('rbr')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Silverstone')
+					.setValue('silverstone')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Snetterton')
+					.setValue('snetterton')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Spa Francorchamps')
+					.setValue('spa')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Suzuka')
+					.setValue('suzuka')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Valencia')
+					.setValue('valencia')
+                    .setEmoji('1196286296843354141'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Watkins Glen')
+					.setValue('watkins')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Zandvoort')
+					.setValue('zandvoort')
+                    .setEmoji('1196286296843354141'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Zolder')
+					.setValue('zolder')
+                    .setEmoji('1196286296843354141'),
+			);
+
+        const confirm = new ButtonBuilder()
+            .setCustomId('submit')
+            .setLabel('Submit')
+            .setStyle(ButtonStyle.Success);
+
+        const cancel = new ButtonBuilder()
+            .setCustomId('cancel')
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Secondary);
+        
+        const cars = new ActionRowBuilder()
+            .addComponents(carSelect);
+
+        const tracks = new ActionRowBuilder()
+            .addComponents(trackSelect);
+
+        const buttons = new ActionRowBuilder()
+            .addComponents(cancel, confirm);
+        
+        const vehicularDevice = interaction.options.getUser('vehicularDevice');
+        const track = interaction.options.getString('track');
+
+        await interaction.reply({
+            content: 'Not available yet.', 
+            components: [cars, tracks, buttons],
+        });*/ 
+    }
+
+    /*//ping test command
     if (interaction.commandName === 'ping') {
         await interaction.reply('Pong!');
     }
@@ -111,250 +506,6 @@ client.on('interactionCreate', async interaction => {
         
     }
 
-    //strategy maker command
-    if (interaction.commandName === 'strategymaker') {
-
-        const carSelect = new StringSelectMenuBuilder()
-			.setCustomId('vehicularDevice')
-			.setPlaceholder('Select your car.')
-			.addOptions(
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('barcelona')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('brands')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('COTA')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('donington')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('hungaroring')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('imola')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('indianapolis')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('kyalami')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('lagunaseca')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('misano')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('bathurst')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('monza')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('nurburgring')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('nordschleife')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('oulton')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('paulricard')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('rbr')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('silverstone')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('snetterton')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('spa')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('suzuka')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('valencia')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('watkins')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('zandvoort')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('[GT3] ')
-					.setValue('zolder')
-                    .setEmoji('123456789012345678'),
-			);
-        
-        const trackSelect = new StringSelectMenuBuilder()
-			.setCustomId('track')
-			.setPlaceholder('Select the track.')
-			.addOptions(
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Barcelona')
-					.setValue('barcelona')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Brands Hatch')
-					.setValue('brands')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('COTA')
-					.setValue('COTA')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Donington Park')
-					.setValue('donington')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Hungaroring')
-					.setValue('hungaroring')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Imola')
-					.setValue('imola')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Indianapolis')
-					.setValue('indianapolis')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Kyalami')
-					.setValue('kyalami')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Laguna Seca')
-					.setValue('lagunaseca')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Misano')
-					.setValue('misano')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Mount Panorama')
-					.setValue('bathurst')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Monza')
-					.setValue('monza')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Nürburgring')
-					.setValue('nurburgring')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Nürburgring 24h')
-					.setValue('nordschleife')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Oulton Park')
-					.setValue('oulton')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Paul Ricard')
-					.setValue('paulricard')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Red Bull Ring')
-					.setValue('rbr')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Silverstone')
-					.setValue('silverstone')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Snetterton')
-					.setValue('snetterton')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Spa Francorchamps')
-					.setValue('spa')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Suzuka')
-					.setValue('suzuka')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Valencia')
-					.setValue('valencia')
-                    .setEmoji('123456789012345678'),
-                new StringSelectMenuOptionBuilder()
-					.setLabel('Watkins Glen')
-					.setValue('watkins')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Zandvoort')
-					.setValue('zandvoort')
-                    .setEmoji('123456789012345678'),
-				new StringSelectMenuOptionBuilder()
-					.setLabel('Zolder')
-					.setValue('zolder')
-                    .setEmoji('123456789012345678'),
-			);
-
-        const confirm = new ButtonBuilder()
-            .setCustomId('submit')
-            .setLabel('Submit')
-            .setStyle(ButtonStyle.Success);
-
-        const cancel = new ButtonBuilder()
-            .setCustomId('cancel')
-            .setLabel('Cancel')
-            .setStyle(ButtonStyle.Secondary);
-        
-        const cars = new ActionRowBuilder()
-            .addComponents(carSelect);
-
-        const tracks = new ActionRowBuilder()
-            .addComponents(trackSelect);
-
-        const buttons = new ActionRowBuilder()
-            .addComponents(cancel, confirm);
-        
-        const vehicularDevice = interaction.options.getUser('vehicularDevice');
-        const track = interaction.options.getString('track');
-
-        await interaction.reply({
-            content: 'Not available yet.', 
-            components: [cars, tracks, buttons],
-        });
-        
-    }
-
     //AI setup engineer command
     if (interaction.commandName === 'setupengineer') {
         await interaction.reply('Not available yet.');
@@ -378,9 +529,7 @@ client.on('interactionCreate', async interaction => {
             )
         
         await interaction.reply({ embeds: [embed] });
-    }
-
-    console.log(interaction);
+    }*/
 });
 
 //AI part using GPT 4o mini (basically ChatGPT but through discord)

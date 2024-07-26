@@ -1,4 +1,4 @@
-require("dotenv/config");
+/*require("dotenv/config");
 const { REST, Routes, ApplicationCommandOptionType } = require("discord.js");
 const { describe } = require("node:test");
 
@@ -53,15 +53,18 @@ const commands = [
         required: true,
       },
       {
-        name: 'fuel-usage',
-        description: 'Average fuel consumption per lap',
-        type: ApplicationCommandOptionType.Number,
+        name: 'car',
+        description: 'Selected car',
+        type: ApplicationCommandOptionType.String,
         required: true,
+        autocomplete: true,
       },
       {
-        name: '',
-        description: 'Car choice',
-        type: ApplicationCommandOptionType.Number,
+        name: 'track',
+        description: 'Selected track',
+        type: ApplicationCommandOptionType.String,
+        required: true,
+        autocomplete: true,
       },
       {
         name: 'safe-laps',
@@ -98,7 +101,7 @@ const commands = [
             required: true,
         }
     ]
-  },*/
+  }, * /
 ];
 
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
@@ -116,4 +119,4 @@ const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
   } catch (error) {
     console.error(`Command register error: ${error}`);
   }
-})();
+})();*/
