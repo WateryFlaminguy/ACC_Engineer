@@ -35,26 +35,15 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY,
 });
 
-//functions
-function addZero(time) {
-    let timeSeconds = time[1]?.split('.');
-    if (timeSeconds[0].length < 2) {
-        for (let i = 0; i < 2-timeSeconds[0].length; i++) {
-            timeSeconds[0] = '0' + timeSeconds[0];
-        }   
-    }
-    time[1] = timeSeconds?.join();
-    return time;
-}
 
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-    console.log(interaction);
+client.on('interactionCreate', interaction => {
+    if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return;
+    //console.log(interaction);
 
     //strategy maker command
-    if (interaction.isAutocomplete() && interaction.commandName === 'strategymaker') {
-        const focusedOption = interaction.options.getFocused();
-        console.log(focusedValue)
+    if (interaction.commandName === 'strategymaker' && interaction.isAutocomplete()) {
+        const focusedOption = interaction.options.getFocused(true);
+        //console.log(focusedOption)
         
         if (focusedOption.name === 'car') {
             const filteredChoices = cars.filter((car) =>

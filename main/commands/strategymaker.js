@@ -39,11 +39,14 @@ const data = new SlashCommandBuilder()
 
 function run({ interaction }) {
     const targetCarId = interaction.options.getString('car');
+    //console.log(targetCarId)
     const car = cars.find((c) => c.id == targetCarId);
 
     const targetTrackId = interaction.options.getString('track');
     const track = tracks.find((t) => t.id == targetTrackId);
 
+    //will replace with embed similar to fuelcalculator
+    //need to add max fuel data to cars.json + GT4, GTC, TCX (no GT2 yet) 
     interaction.reply(`${car.name} - ${track.name}`)
 }
 
