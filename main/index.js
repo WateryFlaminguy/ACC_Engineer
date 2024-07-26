@@ -1,5 +1,7 @@
 //requirements
 require('dotenv/config');
+const cars = require('./data/cars.json')
+const tracks = require('./data/tracks.json')
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, InteractionResponse } = require('discord.js');
 const { CommandKit } = require('commandkit');
 const { OpenAI } = require('openai');
@@ -50,40 +52,38 @@ client.on('interactionCreate', async interaction => {
     console.log(interaction);
 
     //strategy maker command
-    if (interaction.commandName === 'strategymaker') {
-        if (interaction.isAutocomplete()) {
-            const focusedOption = interaction.options.getFocused();
-            console.log(focusedValue)
-            
-            if (focusedOption.name === 'car') {
-                const filteredChoices = cars.filter((car) =>
-                    car.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
-                );
+    if (interaction.isAutocomplete() && interaction.commandName === 'strategymaker') {
+        const focusedOption = interaction.options.getFocused();
+        console.log(focusedValue)
         
-                const results = filteredChoices.map((choice) => {
-                    return {
-                        name: `[${choice.class}] ${choice.name}`,
-                        value: choice.id,
-                    };
-                });
+        if (focusedOption.name === 'car') {
+            const filteredChoices = cars.filter((car) =>
+                car.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
+            );
+    
+            const results = filteredChoices.map((choice) => {
+                return {
+                    name: `[${choice.class}] ${choice.name}`,
+                    value: choice.id,
+                };
+            });
 
-                interaction.respond(results.slice(0, 25)).catch(() => {});
+            interaction.respond(results.slice(0, 25)).catch(() => {});
 
-            } else if (focusedOption.name === 'track') {
-                const filteredChoices = tracks.filter((track) =>
-                    track.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
-                );
-        
-                const results = filteredChoices.map((choice) => {
-                    return {
-                        name: choice.name,
-                        value: choice.id,
-                    };
-                });
+        } else if (focusedOption.name === 'track') {
+            const filteredChoices = tracks.filter((track) =>
+                track.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())
+            );
+    
+            const results = filteredChoices.map((choice) => {
+                return {
+                    name: choice.name,
+                    value: choice.id,
+                };
+            });
 
-                interaction.respond(results.slice(0, 25)).catch(() => {});
-            };
-        }
+            interaction.respond(results.slice(0, 25)).catch(() => {});
+        };
         /*const carSelect = new StringSelectMenuBuilder()
 			.setCustomId('vehicularDevice')
 			.setPlaceholder('Select your car.')

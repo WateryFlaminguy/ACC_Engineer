@@ -1,5 +1,5 @@
 const cars = require('../data/cars.json')
-const tracks = require('../data/cars.json')
+const tracks = require('../data/tracks.json')
 const { SlashCommandBuilder } = require('discord.js')
 
 const data = new SlashCommandBuilder()
