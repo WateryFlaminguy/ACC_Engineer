@@ -39,6 +39,36 @@ const commands = [
   {
     name: "strategymaker",
     description: "Provides optimal stint strategies depending on event conditions.",
+    options: [
+      {
+        name: 'race-time',
+        description: 'Race length with the format hh:mm',
+        type: ApplicationCommandOptionType.String,
+        required: true,
+      },
+      {
+        name: 'laptime',
+        description: 'Average lap time with the format mm:ss.ms',
+        type: ApplicationCommandOptionType.String,
+        required: true,
+      },
+      {
+        name: 'fuel-usage',
+        description: 'Average fuel consumption per lap',
+        type: ApplicationCommandOptionType.Number,
+        required: true,
+      },
+      {
+        name: '',
+        description: 'Car choice',
+        type: ApplicationCommandOptionType.Number,
+      },
+      {
+        name: 'safe-laps',
+        description: 'Additional fuel to add (3%/lap)',
+        type: ApplicationCommandOptionType.Number,
+      },
+    ],
   },
   {
     name: "setupengineer",

@@ -1,6 +1,6 @@
 //requirements
 require('dotenv/config');
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 const { OpenAI } = require('openai');
 
 //define client 
@@ -113,7 +113,246 @@ client.on('interactionCreate', async interaction => {
 
     //strategy maker command
     if (interaction.commandName === 'strategymaker') {
-        await interaction.reply('Not available yet.');
+
+        const carSelect = new StringSelectMenuBuilder()
+			.setCustomId('vehicularDevice')
+			.setPlaceholder('Select your car.')
+			.addOptions(
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('barcelona')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('brands')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('COTA')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('donington')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('hungaroring')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('imola')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('indianapolis')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('kyalami')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('lagunaseca')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('misano')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('bathurst')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('monza')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('nurburgring')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('nordschleife')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('oulton')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('paulricard')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('rbr')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('silverstone')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('snetterton')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('spa')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('suzuka')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('valencia')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('watkins')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('zandvoort')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('[GT3] ')
+					.setValue('zolder')
+                    .setEmoji('123456789012345678'),
+			);
+        
+        const trackSelect = new StringSelectMenuBuilder()
+			.setCustomId('track')
+			.setPlaceholder('Select the track.')
+			.addOptions(
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Barcelona')
+					.setValue('barcelona')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Brands Hatch')
+					.setValue('brands')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('COTA')
+					.setValue('COTA')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Donington Park')
+					.setValue('donington')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Hungaroring')
+					.setValue('hungaroring')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Imola')
+					.setValue('imola')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Indianapolis')
+					.setValue('indianapolis')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Kyalami')
+					.setValue('kyalami')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Laguna Seca')
+					.setValue('lagunaseca')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Misano')
+					.setValue('misano')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Mount Panorama')
+					.setValue('bathurst')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Monza')
+					.setValue('monza')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Nürburgring')
+					.setValue('nurburgring')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Nürburgring 24h')
+					.setValue('nordschleife')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Oulton Park')
+					.setValue('oulton')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Paul Ricard')
+					.setValue('paulricard')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Red Bull Ring')
+					.setValue('rbr')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Silverstone')
+					.setValue('silverstone')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Snetterton')
+					.setValue('snetterton')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Spa Francorchamps')
+					.setValue('spa')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Suzuka')
+					.setValue('suzuka')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Valencia')
+					.setValue('valencia')
+                    .setEmoji('123456789012345678'),
+                new StringSelectMenuOptionBuilder()
+					.setLabel('Watkins Glen')
+					.setValue('watkins')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Zandvoort')
+					.setValue('zandvoort')
+                    .setEmoji('123456789012345678'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Zolder')
+					.setValue('zolder')
+                    .setEmoji('123456789012345678'),
+			);
+
+        const confirm = new ButtonBuilder()
+            .setCustomId('submit')
+            .setLabel('Submit')
+            .setStyle(ButtonStyle.Success);
+
+        const cancel = new ButtonBuilder()
+            .setCustomId('cancel')
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Secondary);
+        
+        const cars = new ActionRowBuilder()
+            .addComponents(carSelect);
+
+        const tracks = new ActionRowBuilder()
+            .addComponents(trackSelect);
+
+        const buttons = new ActionRowBuilder()
+            .addComponents(cancel, confirm);
+        
+        const vehicularDevice = interaction.options.getUser('vehicularDevice');
+        const track = interaction.options.getString('track');
+
+        await interaction.reply({
+            content: 'Not available yet.', 
+            components: [cars, tracks, buttons],
+        });
+        
     }
 
     //AI setup engineer command
